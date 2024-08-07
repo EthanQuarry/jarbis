@@ -13,6 +13,8 @@ cloud.google.com/go/longrunning v0.5.11 h1:Havn1kGjz3whCfoD8dxMLP73Ph5w+ODyZB9RU
 cloud.google.com/go/longrunning v0.5.11/go.mod h1:rDn7//lmlfWV1Dx6IB4RatCPenTwwmqXuiP0/RgoEO4=
 cloud.google.com/go/speech v1.24.0 h1:3j+WpeBY57C0FDJxg317vpKgOLjL/kNxlcNPGSqXkqE=
 cloud.google.com/go/speech v1.24.0/go.mod h1:HcVyIh5jRXM5zDMcbFCW+DF2uK/MSGN6Rastt6bj1ic=
+cloud.google.com/go/texttospeech v1.7.11 h1:jzko1ahItjLYEWr6n3lTIoBSinD1JzavEuDzYLWZNko=
+cloud.google.com/go/texttospeech v1.7.11/go.mod h1:Ua125HU+WT2IkIo5MzQtuNpNEk72soShJQVdorZ1SAE=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
