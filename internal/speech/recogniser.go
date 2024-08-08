@@ -48,7 +48,7 @@ func (r *Recognizer) RecognizeSpeech(ctx context.Context, audioSource <-chan []b
 	}
 
 	go r.sendAudio(stream, audioSource)
-
+	
 	return r.receiveResults(stream)
 }
 
@@ -81,6 +81,7 @@ func (r *Recognizer) receiveResults(stream speechpb.Speech_StreamingRecognizeCli
 			return fmt.Errorf("could not recognize: %v", err)
 		}
 		for _, result := range resp.Results {
+			fmt.Println("User: ", result.Alternatives[0].Transcript)
 			if result.IsFinal {
 				transcript.WriteString(result.Alternatives[0].Transcript)
 				transcript.WriteString(" ")
@@ -146,7 +147,16 @@ func (r *Recognizer) sendTranscriptRequest(text string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("request failed with status: %s", resp.Status)
+		 // Parse the error response body
+		var errorBody struct {
+			Error struct {
+				Message string `json:"message"`
+			} `json:"error"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&errorBody); err != nil {
+			return fmt.Errorf("request failed with status: %s", resp.Status)
+		}
+		return fmt.Errorf("request failed with status: %s and an error: %s", resp.Status, errorBody.Error.Message)
 	}
 
 	// Parse the JSON response
@@ -163,31 +173,37 @@ func (r *Recognizer) sendTranscriptRequest(text string) error {
 	// Print the "content" string to the console
 	fmt.Println("Assistant:", content)
 
-	// Convert the text to speech
-	audioContent, err := synthesizeSpeech(context.Background(), content)
-	if err != nil {
-		return fmt.Errorf("failed to synthesize speech: %v", err)
-	}
+	// Run speech synthesis and playback in a separate goroutine
+	go func() {
+		audioContent, err := synthesizeSpeech(context.Background(), content)
+		if err != nil {
+			log.Printf("failed to synthesize speech: %v", err)
+			return
+		}
 
-	// Play the audio using ffplay
-	cmd := exec.Command("ffplay", "-nodisp", "-autoexit", "-")
-	stdin, err := cmd.StdinPipe()
-	if err != nil {
-		return fmt.Errorf("failed to create stdin pipe: %v", err)
-	}
-	defer stdin.Close()
+		cmd := exec.Command("ffplay", "-nodisp", "-autoexit", "-")
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			log.Printf("failed to create stdin pipe: %v", err)
+			return
+		}
+		defer stdin.Close()
 
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("failed to start ffplay: %v", err)
-	}
+		if err := cmd.Start(); err != nil {
+			log.Printf("failed to start ffplay: %v", err)
+			return
+		}
 
-	if _, err := io.Copy(stdin, bytes.NewReader(audioContent)); err != nil {
-		return fmt.Errorf("failed to write audio data to ffplay: %v", err)
-	}
+		if _, err := io.Copy(stdin, bytes.NewReader(audioContent)); err != nil {
+			log.Printf("failed to write audio data to ffplay: %v", err)
+			return
+		}
 
-	if err := cmd.Wait(); err != nil {
-		return fmt.Errorf("failed to wait for ffplay: %v", err)
-	}
+		if err := cmd.Wait(); err != nil {
+			log.Printf("failed to wait for ffplay: %v", err)
+			return
+		}
+	}()
 
 	return nil
 }
@@ -205,7 +221,7 @@ func synthesizeSpeech(ctx context.Context, text string) ([]byte, error) {
 		},
 		Voice: &texttospeechpb.VoiceSelectionParams{
 			LanguageCode: "en-US",
-			SsmlGender:   texttospeechpb.SsmlVoiceGender_NEUTRAL,
+			SsmlGender:   texttospeechpb.SsmlVoiceGender_MALE,
 		},
 		AudioConfig: &texttospeechpb.AudioConfig{
 			AudioEncoding: texttospeechpb.AudioEncoding_LINEAR16,

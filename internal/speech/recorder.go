@@ -2,8 +2,11 @@ package speech
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"time"
+
+	"github.com/EthanQuarry/jarbis/internal/domain/speech/entities"
 )
 
 type Recorder struct {
@@ -14,12 +17,12 @@ func NewRecorder(duration time.Duration) *Recorder {
 	return &Recorder{duration: duration}
 }
 
-func (r *Recorder) Record(ch chan<- []byte) {
+func (r *Recorder) Record(ch entities.Channel) {
 	fmt.Println("Recording started. Press Ctrl+C to stop.")
 	for {
 		cmd := exec.Command("ffmpeg",
 			"-f", "dshow",
-			"-i", "audio=Microphone (3- USB PnP Audio Device)",
+			"-i", os.Getenv("INPUT_DEVICE_NAME"),
 			 "-acodec", "pcm_s16le",
 			"-ar", "16000",
 			"-ac", "1",
