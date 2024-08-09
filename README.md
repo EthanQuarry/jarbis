@@ -22,7 +22,7 @@ In the future, Jarbis is envisioned to have the capability to control the entire
   - Google Cloud Speech-to-Text API for speech recognition
   - Google Cloud Text-to-Speech API for speech synthesis
 - FFmpeg for audio recording and playback
-- gRPC for communication between Jarbis components
+- RobotGo for controlling mouse movements and keyboard inputs. 
 - Git for version control and repository management
 
 ## Setup and Usage
