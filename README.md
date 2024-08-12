@@ -36,20 +36,25 @@ In the future, Jarbis is envisioned to have the capability to control the entire
    - Install Go and configure your Go environment
    - Set up a Google Cloud Platform project and enable the Speech-to-Text and Text-to-Speech APIs
    - Install FFmpeg
+  
+3. Run the command:
+   ```
+   $ cp .env.example .env
+   ```
 
-3. Configure the required environment variables:
+4. Configure the required environment variables:
    - `GOOGLE_APPLICATION_CREDENTIALS`: Path to your Google Cloud Platform credentials file
    - `GROQ_API_KEY`: API key for the Groq API (if applicable)
    - `INPUT_DEVICE_NAME`: Variable for your input device name
 
-4. Build and run the Jarbis application:
+5. Build and run the Jarbis application:
    ```
    cd jarbis
    go build ./cmd/jarbis
    ./jarbis
    ```
 
-5. Interact with Jarbis using voice commands or by typing in the console.
+6. Interact with Jarbis using voice commands or by typing in the console.
 
 ## Future Enhancements
 
