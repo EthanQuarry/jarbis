@@ -40,6 +40,7 @@ In the future, Jarbis is envisioned to have the capability to control the entire
 3. Configure the required environment variables:
    - `GOOGLE_APPLICATION_CREDENTIALS`: Path to your Google Cloud Platform credentials file
    - `GROQ_API_KEY`: API key for the Groq API (if applicable)
+   - `INPUT_DEVICE_NAME`: Variable for your input device name
 
 4. Build and run the Jarbis application:
    ```
